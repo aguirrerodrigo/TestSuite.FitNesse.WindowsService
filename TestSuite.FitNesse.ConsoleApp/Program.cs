@@ -5,6 +5,16 @@ namespace TestSuite.FitNesse.ConsoleApp
 {
     class Program
     {
+        static Program()
+        {
+            FitNesse.Instance.AbruptlyStopped += FitNesse_AbruptlyStopped;
+        }
+
+        private static void FitNesse_AbruptlyStopped(object sender, EventArgs e)
+        {
+            Console.WriteLine("\r\nFitNesse process abruptly stopped. Please check log file for details.");
+        }
+
         static void Main(string[] args)
         {
             var commandManager = new CommandManager(Console.Out);

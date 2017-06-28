@@ -7,8 +7,9 @@ namespace TestSuite.FitNesse
 {
     public class FitNesse
     {
-        private LogWriter logger;
+        public event EventHandler AbruptlyStopped;
 
+        private LogWriter logger;
         private Process fitnesseProc;
 
         public static FitNesse Instance { get; private set; } = new FitNesse();
@@ -31,12 +32,13 @@ namespace TestSuite.FitNesse
 
             this.fitnesseProc = new Process();
             this.fitnesseProc.StartInfo = BuildStartInfo();
-            this.fitnesseProc.OutputDataReceived += OnOutputDataReceived;
-            this.fitnesseProc.ErrorDataReceived += OnErrorDataReceived;
+
+            this.HookEvents(this.fitnesseProc);
+
             this.fitnesseProc.Start();
             this.fitnesseProc.BeginOutputReadLine();
             this.fitnesseProc.BeginErrorReadLine();
-        }        
+        }
 
         private ProcessStartInfo BuildStartInfo()
         {
@@ -51,6 +53,13 @@ namespace TestSuite.FitNesse
 
             return result;
         }
+        private void HookEvents(Process fitnesseProc)
+        {
+            this.fitnesseProc.EnableRaisingEvents = true;
+            this.fitnesseProc.OutputDataReceived += OnOutputDataReceived;
+            this.fitnesseProc.ErrorDataReceived += OnErrorDataReceived;
+            this.fitnesseProc.Exited += OnExited;
+        }
 
         private void OnErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -64,13 +73,26 @@ namespace TestSuite.FitNesse
                 logger.Write(e.Data);
         }
 
+        private void OnExited(object sender, EventArgs e)
+        {
+            this.UnhookEvents(sender as Process);
+            this.AbruptlyStopped?.Invoke(this, new EventArgs());
+        }
+
         public void Stop()
         {
             if (!this.IsRunning)
                 throw new FitNesseException("Could not stop FitNesse process. FitNesse process not yet started.");
 
+            this.UnhookEvents(this.fitnesseProc);
             this.fitnesseProc.Kill();
-            this.fitnesseProc = null;
+        }
+
+        private void UnhookEvents(Process fitnesseProc)
+        {
+            this.fitnesseProc.OutputDataReceived -= OnOutputDataReceived;
+            this.fitnesseProc.ErrorDataReceived -= OnErrorDataReceived;
+            this.fitnesseProc.Exited -= OnExited;
         }
     }
 }
