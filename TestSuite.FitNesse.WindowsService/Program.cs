@@ -12,7 +12,7 @@ namespace TestSuite.FitNesse.WindowsService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new FitNesse()
+                new FitNesseWindowsService()
             };
             ServiceBase.Run(ServicesToRun);
         }

@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>TestSuite.FitNesse.WindowsService</RootNamespace>
     <AssemblyName>TestSuite.FitNesse.WindowsService</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -44,17 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FitNesse.cs">
+    <Compile Include="FitNesseWindowsService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FitNesse.Designer.cs">
-      <DependentUpon>FitNesse.cs</DependentUpon>
+    <Compile Include="FitNesseWindowsService.Designer.cs">
+      <DependentUpon>FitNesseWindowsService.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestSuite.FitNesse\TestSuite.FitNesse.csproj">
+      <Project>{316c8e29-589c-4977-a848-ab8068a63828}</Project>
+      <Name>TestSuite.FitNesse</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
